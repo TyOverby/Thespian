@@ -145,12 +145,16 @@ fn main(){
     let id = las.spawn(AddActor{state: 0});
 
     let (tr, rx) = channel();
-    las.send_to(id, 1u, Some(tr.clone()));
+    for i in range(0u, 50u) {
+        las.send_to(id, i, Some(tr.clone()));
+    }
     las.send_to(id, Suicide, None);
-    let resp = rx.recv();
-    match_any! { resp.contents match
-        if uint {
-            &x => println!("{}",x)
-        } else {()}
+    for _ in range(0, 50) {
+        let resp = rx.recv();
+        match_any! { resp.contents match
+            if uint {
+                &x => println!("{}",x)
+            } else {()}
+        }
     }
 }
